@@ -24,6 +24,21 @@ date: 2022-06-02
 - Hls를 이용하여 재생한다.
 
 ---
+🌱 06-01 
+- youtube-video-player v1 마무리 작업
+
+
+🌱 06-02, 06-03
+- youtube-video-player v2 프로젝트 세팅
+- api 구조 세팅
+- vuex 상태관리 구조 세팅
+- vue page API 통신 
+- 컴포넌트 props 데이터 전달
+
+**TODO**
+- index.vue에 video list Layout화 할 예정
+- Lazyloading 방식으로 추가 영상 개수 로드
+
 
 
 ## Build Setup
