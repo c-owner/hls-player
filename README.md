@@ -17,7 +17,9 @@ date: 2022-06-02
 ## 퀘스트
 
 - 기존의 Youtube-Video-Player 완성도 향상시키고 컴포넌트화 할 것
-- API 주소를 받아 영상들 리스트화 [Only Watch me](https://eatalk.live24.app/api/vod/json/list?row_count=15&page_no=1&order_col=no&shuffle=true)
+- API 주소를 받아 영상들 리스트화 
+
+[//]: # (- [Only Watch me]&#40;https://eatalk.live24.app/api/vod/json/list?row_count=15&page_no=1&order_col=no&shuffle=true&#41;)
 - 스크롤 내렸을 때 화면 상단에 영상이 맞춰지면 자동재생
 - Hls를 이용하여 재생한다.
 
