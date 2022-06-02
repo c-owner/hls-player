@@ -10,13 +10,13 @@ export default {
     name: 'index',
     data() {
         return {
-            querySet: '',
+            listApiParamSet: {},
             videoData: [],
             total: '',
         }
     },
     async mounted() {
-        this.querySet = {
+        this.listApiParamSet = {
             row_count: 15,
             page_no: 1,
             order_col: 'no',
@@ -26,7 +26,7 @@ export default {
     },
     methods: {
         async getPlayer() {
-            let params = JSON.parse(JSON.stringify(this.querySet));
+            let params = JSON.parse(JSON.stringify(this.listApiParamSet));
             await this.$store.dispatch('get_video', params).then(res => {
                 this.videoData = res.data;
                 this.total = res.total;
