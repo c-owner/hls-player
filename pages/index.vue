@@ -1,10 +1,10 @@
 <template>
     <div>
-        <Player :videoData="videoData" :total="total"/>
+<!--        <Player :videoData="videoData" :total="total"/>-->
         <hr/>
         <div class="list-group">
             <div v-for="(video, index) in videoData" :key="`${video.no}`">
-                <Player />
+                <Player :videoData="video" />
             </div>
         </div>
     </div>
