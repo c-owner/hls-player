@@ -180,7 +180,6 @@ export default {
         checkScroll() {
             // 비디오가 viewport와의 거리가 0이라면 비디오 재생
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
-            console.log("------------")
             // let currentVideoScroll = (this.videoScroll + this.$refs.video.offsetHeight);
             // 스크롤이 비디오 크기보다 내려가거나 올라갔을 경우 정지
 
