@@ -156,24 +156,35 @@ export default {
                 this.handleTimelineUpdate(e);
             }
         });
+        // document.addEventListener('scroll', this.scrollPlay);
 
         document.addEventListener('scroll', () =>{
             this.checkScroll();
         });
+        // document.addEventListener('scroll', this.checkScroll, false)
+        // document.addEventListener('resize', this.checkScroll, false)
     },
     methods: {
         checkScroll() {
-            const videos = this.$refs.video;
             // 비디오가 viewport와의 거리가 0이라면 비디오 재생
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
+            console.log("------------")
+            // let currentVideoScroll = (this.videoScroll + this.$refs.video.offsetHeight);
+            // 스크롤이 비디오 크기보다 내려가거나 올라갔을 경우 정지
+
             if (this.videoScroll > -40 && this.videoScroll < 40) {
                 this.paused = false;
                 this.playState = true;
-                videos.play();
+                this.$refs.video.play();
             } else {
                 this.paused = true;
                 this.playState = false;
-                videos.pause();
+                this.$refs.video.pause();
+                this.$refs.video.currentTime = 0;
+                this.currentTime = '0:00';
+                // this.$refs.video.
+                // if (currentVideoScroll > -40 && currentVideoScroll < 40) {
+                // }
             }
         },
         toggleScrubbing(e) {
