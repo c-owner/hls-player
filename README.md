@@ -94,3 +94,15 @@ hls.attachMedia(this.$refs.video);
 
 `hls.attachMedia(video)` 
 
+
+
+
+
+---
+
+## infinite scrolling for vue/nuxt.js
+
+```bash
+npm install vue-infinite-loading -S
+```
+

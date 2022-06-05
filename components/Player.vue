@@ -97,7 +97,7 @@ export default {
     name: 'Player',
     props: {
         videoData: { type: Object, default: {} },
-        total: { type: String, default: '0' },
+        index: 0,
     },
     data() {
         return {
@@ -156,13 +156,25 @@ export default {
                 this.handleTimelineUpdate(e);
             }
         });
-        // document.addEventListener('scroll', this.scrollPlay);
+
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+            console.log(" page reload ");
+            // page가 reload 되었을 때 재생되어야하는데, 모든 영상이 재생되면 곤란함..
+            if (this.$refs.video.paused && this.playState) {
+                console.log("???")
+                this.paused = false;
+                this.playState = true;
+                this.$refs.video.play();
+            } else {
+                this.paused = true;
+                this.playState = false;
+                this.$refs.video.pause();
+            }
+        }
 
         document.addEventListener('scroll', () =>{
             this.checkScroll();
         });
-        // document.addEventListener('scroll', this.checkScroll, false)
-        // document.addEventListener('resize', this.checkScroll, false)
     },
     methods: {
         checkScroll() {
