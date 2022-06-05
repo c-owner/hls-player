@@ -36,6 +36,9 @@ date: 2022-06-02
 - vue page API 통신 
 - 컴포넌트 props 데이터 전달
 - video list
+
+🌱 06-05
+
 - hls 영상 재생
 - play/pause 버그 해결
 
@@ -44,6 +47,7 @@ date: 2022-06-02
 **TODO**
 
 - Lazyloading 방식으로 추가 영상 개수 로드
+- Scroll에 위치하면 자동 재생
 
 
 
@@ -87,3 +91,4 @@ hls.attachMedia(this.$refs.video);
 `hls.loadSource(url)` 
 
 `hls.attachMedia(video)` 
+
