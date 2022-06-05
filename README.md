@@ -40,16 +40,11 @@ date: 2022-06-02
 🌱 06-05
 
 - hls 영상 재생
-
 - play/pause 버그 해결
-
 - Scroll에 위치하면 자동 재생
-
-  
+- Lazyloading 방식으로 추가 영상 로드
 
 **TODO**
-
-- Lazyloading 방식으로 추가 영상 개수 로드
 
 
 
