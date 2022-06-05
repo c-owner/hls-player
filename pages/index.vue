@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding-top: 150px;">
         <div class="text-center">
             <div>
                 <h1>Video List HLS Player</h1>

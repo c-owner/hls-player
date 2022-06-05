@@ -9,7 +9,7 @@ date: 2022-06-02
 > 
 > 해당 버전에서는 HLS 영상처리 작업 처리와 Nuxt를 활용하여 스타일 처리들을 더 심화한 버전으로 변경하였습니다.
 
-
+[**DEMO VIDEO Player**](https://youtube-video-player-v2.vercel.app/)
 
 ---
 
@@ -40,10 +40,12 @@ date: 2022-06-02
 🌱 06-05
 
 - hls 영상 재생
+
 - play/pause 버그 해결
+
 - Scroll에 위치하면 자동 재생
 
-
+  
 
 **TODO**
 
