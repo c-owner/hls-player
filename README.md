@@ -34,9 +34,11 @@ date: 2022-06-02
 - vuex 상태관리 구조 세팅
 - vue page API 통신 
 - 컴포넌트 props 데이터 전달
+- video list
 
 **TODO**
-- index.vue에 video list Layout화 할 예정
+- hls 영상 재생
+- play/pause 버그
 - Lazyloading 방식으로 추가 영상 개수 로드
 
 
