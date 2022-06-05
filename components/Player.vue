@@ -116,7 +116,8 @@ export default {
 
     mounted() {
         // this.playUrl = this.videoData.play_url.hls['1080p'];
-        this.playUrl = this.videoData.play_url.mp4['1080p'];
+        // this.playUrl = this.videoData.play_url.mp4['1080p'];
+        this.playUrl = require('@/assets/my_video.mp4');
 
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
