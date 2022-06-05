@@ -79,13 +79,14 @@
 
                 </div>
             </div>
-            <video :src="playUrl" ref="video" @click="togglePlay" :autoplay="playState">
+            <video id="video" ref="video" @click="togglePlay" :autoplay="playState">
             </video>
         </div>
     </div>
 </template>
 
 <script>
+import Hls from 'hls.js';
 
 export default {
     name: 'Player',
@@ -115,9 +116,12 @@ export default {
     },
 
     mounted() {
-        // this.playUrl = this.videoData.play_url.hls['1080p'];
+        this.playUrl = this.videoData.play_url.hls['1080p'];
+        var hls = new Hls();
+        hls.loadSource(this.videoData.play_url.hls['1080p']);
+        hls.attachMedia(this.$refs.video);
         // this.playUrl = this.videoData.play_url.mp4['1080p'];
-        this.playUrl = require('@/assets/my_video.mp4');
+        // this.playUrl = require('@/assets/my_video.mp4');
 
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
@@ -207,16 +211,14 @@ export default {
             }
         },
         togglePlay() {
-            const video = this.$refs.video;
-            video.src = this.playUrl;
-            if (video.paused) {
+            if (this.$refs.video.paused) {
                 this.paused = false;
                 this.playState = true;
-                video.play();
+                this.$refs.video.play();
             } else {
                 this.paused = true;
                 this.playState = false;
-                video.pause();
+                this.$refs.video.pause();
             }
         },
         // volume control
