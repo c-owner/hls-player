@@ -9,7 +9,7 @@
         <hr/>
         <div class="list-group">
             <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box">
-                <Player :videoData="video" />
+                <Player :key="video.no" :videoData="video" />
             </div>
         </div>
     </div>

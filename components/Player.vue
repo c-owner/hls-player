@@ -116,6 +116,7 @@ export default {
             previewImg: '',
             thumbnailImg: '',
             isScrubbing: false,
+            videoScroll: 0,
         }
     },
 
@@ -155,31 +156,23 @@ export default {
                 this.handleTimelineUpdate(e);
             }
         });
-        // document.addEventListener('scroll', this.scrollPlay);
 
         document.addEventListener('scroll', () =>{
             this.checkScroll();
         });
-        // document.addEventListener('scroll', this.checkScroll, false)
-        // document.addEventListener('resize', this.checkScroll, false)
     },
     methods: {
         checkScroll() {
             const videos = this.$refs.video;
-            console.log("---------")
-            console.log(this.videoData.no + ": 비디오 HTML과의 시작점 거리 : ",
-                this.$refs.video.getBoundingClientRect().top + window.pageYOffset);
-            console.log(this.videoData.no + ": 비디오 Viewport와의 거리 : ",
-                this.$refs.video.getBoundingClientRect().top);
-            console.log("내 스크롤 위치 : ", document.scrollingElement.scrollTop);
-            console.log("------------")
             // 비디오가 viewport와의 거리가 0이라면 비디오 재생
-            let scrollTop = this.$refs.video.getBoundingClientRect().top;
-            console.log(scrollTop);
-            if (scrollTop < 2 || scrollTop > -1) {
-                // this.togglePlay();
+            this.videoScroll = this.$refs.video.getBoundingClientRect().top;
+            if (this.videoScroll > -40 && this.videoScroll < 40) {
+                this.paused = false;
+                this.playState = true;
                 videos.play();
             } else {
+                this.paused = true;
+                this.playState = false;
                 videos.pause();
             }
         },
