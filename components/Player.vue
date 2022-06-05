@@ -96,7 +96,6 @@ export default {
     },
     data() {
         return {
-            playUrl: '',
             playState: false,
             paused: true,
             theaterMode: false,
@@ -116,7 +115,6 @@ export default {
     },
 
     mounted() {
-        this.playUrl = this.videoData.play_url.hls['1080p'];
         var hls = new Hls();
         hls.loadSource(this.videoData.play_url.hls['1080p']);
         hls.attachMedia(this.$refs.video);
