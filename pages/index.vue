@@ -13,19 +13,22 @@
                 <Player :key="video.no" :index="index" :videoData="video" />
             </div>
         </div>
-
-        <Lazyloading :paginationData="paginationData" />
+        <infinite-loading
+            v-if="videoData.length"
+            @infinite="getPlayer"
+        ></infinite-loading>
     </div>
 </template>
 
 <script>
+
+import axios from "axios";
 
 export default {
     name: 'index',
     layout: 'LazyloadingLayout',
     provide() {
         return {
-            setPage: this.setPage,
         }
     },
     data() {
@@ -33,57 +36,44 @@ export default {
             listApiParamSet: {},
             videoData: [],
             total: '',
-            paginationData: {},
         }
     },
     created() {
         this.init();
     },
     async mounted() {
-        await this.getPlayer();
-        this.$nextTick(() => {
-            this.$on('getVideoList', this.getPlayer);
-        });
     },
     destroyed() {
-        this.$nextTick(() => {
-            this.$off('getVideoList', this.getPlayer);
-        });
     },
     methods: {
-        init () {
+        async init () {
             this.listApiParamSet = {
                 row_count: 10,
                 page_no: 1,
                 order_col: 'no',
             };
-            this.paginationData = {
-                page: 1,
-                pageSize: 10,
-                total: 0,
-            };
+            await this.fetchData();
         },
-        async getPlayer() {
-            if (this.videoData.length > 1) {
-                this.listApiParamSet.page_no += 1;
-            }
-
+        async fetchData() {
             let params = JSON.parse(JSON.stringify(this.listApiParamSet));
-            await this.$store.dispatch('get_video', params).then(res => {
-                if (this.videoData.length < 1) {
-                    this.videoData = [];
-                    this.videoData = res.data;
-                } else {
-                    res.data.forEach((val, index, obj) => {
-                        this.videoData.push(obj);
-                    });
-                }
-                this.total = res.total;
-                this.paginationData.total = this.total;
-            });
+            const response = await this.$store.dispatch("get_video", params);
+            this.videoData = response.data;
         },
-        setPage(key, value) {
-            this[key] = value;
+        async getPlayer($state) {
+            setTimeout(async () => {
+                this.listApiParamSet.page_no++;
+                try {
+                    const res = await this.$store.dispatch("get_video", this.listApiParamSet);
+                    if (res && res.data.length > 1) {
+                        res.data.forEach((item) => this.videoData.push(item));
+                        $state.loaded();
+                    } else {
+                        $state.complete();
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }, 500);
         },
     },
 }

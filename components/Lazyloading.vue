@@ -1,46 +1,58 @@
 <template>
     <div>
-        <Nuxt/>
-        <infinite-loading v-if="paginationData.total > 0 && paginationData.total > paginationData.page * paginationData.size"
-                          @infinite="infiniteHandler($event)" loadingSpinner="bubbles"
-                          loadingText="Loading more data...">
-            <div slot="no-more">No More Message</div>
-            <div slot="no-results">No Results</div>
-            <div slot="error" slot-scope="{ trigger }">
-                Error Message, click
-                <a href="javascript:void(0)" @click="trigger">here</a> to retry
-            </div>
-        </infinite-loading>
+        <div v-for="(item, idx) in videoData" :key="idx">
+            <div style="padding: 5px;"> - </div>
+        </div>
+        <br />
+        <infinite-loading
+            v-if="videoData.length"
+            @infinite="scrolling"
+        ></infinite-loading>
     </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-    name: "Lazyloading",
-    props: {
-        paginationData: {
-            type: Object,
-            default: {
-                total: 0,
-                page: 0,
-                size: 0,
-            }
+    name: "InfiniteList",
+    data() {
+        return {
+            videoData: [],
+
+            page: 1,
+        };
+    },
+    computed: {
+        url() {
+            // free fake api 사용
+            return "https://jsonplaceholder.typicode.com/posts?_page=" + this.page;
         },
     },
+    created() {
+        this.fetchData();
+    },
+
     methods: {
-        async infiniteHandler($event) {
-            let page = this.paginationData.page;
-            page = page + 1;
-            this.setPage('page', page);
-            this.$emit('getVideoList');
-            setTimeout(() => {
-                $event.target.complete();
-            }, 500)
+        async fetchData() {
+
+            let params = JSON.parse(JSON.stringify(this.listApiParamSet));
+            const response = await this.$store.dispatch("get_video", params);
+            this.videoData = response.data;
+        },
+        scrolling($state) {
+            // 스크롤이 페이지 하단에 위치해도 약간의 딜레이를 주고 데이터를 가져옴
+            setTimeout(async () => {
+                this.page++;
+                const response = await axios.get(this.url);
+                if (response && response.data.length > 1) {
+                    response.data.forEach((item) => this.videoData.push(item));
+                    $state.loaded();
+                } else {
+                    $state.complete();
+                }
+            }, 500);
         },
     },
-}
+};
 </script>
-
-<style scoped>
-
-</style>
