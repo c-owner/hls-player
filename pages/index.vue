@@ -1,9 +1,14 @@
 <template>
     <div>
-<!--        <Player :videoData="videoData" :total="total"/>-->
+        <div class="text-center">
+            <div>
+                <h1>Video List HLS Player</h1>
+                total: {{ total}}
+            </div>
+        </div>
         <hr/>
         <div class="list-group">
-            <div v-for="(video, index) in videoData" :key="`${video.no}`">
+            <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box">
                 <Player :videoData="video" />
             </div>
         </div>

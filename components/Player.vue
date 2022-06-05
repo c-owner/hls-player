@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1 style="text-align: center;"> YOUTUBE - VIDEO - PLAYER </h1>
         <div class="video-container" data-volume-level="high"
              :class="[{'paused' : paused && !playState}, {'theater' : theaterMode},
          {'full-screen': fullscreen}, {'muted': volume === 0},
@@ -116,7 +115,8 @@ export default {
     },
 
     mounted() {
-        this.playUrl = this.videoData.play_url.hls['1080p'];
+        // this.playUrl = this.videoData.play_url.hls['1080p'];
+        this.playUrl = this.videoData.play_url.mp4['1080p'];
 
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
@@ -170,13 +170,14 @@ export default {
             const rect = timeline.getBoundingClientRect();
             const percent =
                 Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width;
-            const previewImgNumber = Math.max(1, Math.floor((percent * this.$refs.video.duration) / 10));
+            // const previewImgNumber = Math.max(1, Math.floor((percent * this.$refs.video.duration) / 10));
             // this.previewImg = require(`assets/previewImgs/preview${previewImgNumber}.jpg`);
+            this.previewImg = this.videoData.thumb_url;
             timeline.style.setProperty('--preview-position', percent);
 
             if (this.isScrubbing) {
                 e.preventDefault();
-                // this.thumbnailImg = this.previewImg;
+                this.thumbnailImg = this.previewImg;
                 timeline.style.setProperty('--progress-position', percent)
             }
         },
@@ -205,14 +206,16 @@ export default {
             }
         },
         togglePlay() {
-            if (this.$refs.video.paused) {
+            const video = this.$refs.video;
+            video.src = this.playUrl;
+            if (video.paused) {
                 this.paused = false;
                 this.playState = true;
-                this.$refs.video.play();
+                video.play();
             } else {
                 this.paused = true;
                 this.playState = false;
-                this.$refs.video.pause();
+                video.pause();
             }
         },
         // volume control
