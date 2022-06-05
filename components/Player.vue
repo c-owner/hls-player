@@ -1,5 +1,10 @@
 <template>
     <div>
+        <div>
+            <h2 class="text-center">
+                [{{videoData.no}}] {{ videoData.title}}
+            </h2>
+        </div>
         <div class="video-container" data-volume-level="high"
              :class="[{'paused' : paused && !playState}, {'theater' : theaterMode},
          {'full-screen': fullscreen}, {'muted': volume === 0},
@@ -150,8 +155,34 @@ export default {
                 this.handleTimelineUpdate(e);
             }
         });
+        // document.addEventListener('scroll', this.scrollPlay);
+
+        document.addEventListener('scroll', () =>{
+            this.checkScroll();
+        });
+        // document.addEventListener('scroll', this.checkScroll, false)
+        // document.addEventListener('resize', this.checkScroll, false)
     },
     methods: {
+        checkScroll() {
+            const videos = this.$refs.video;
+            console.log("---------")
+            console.log(this.videoData.no + ": 비디오 HTML과의 시작점 거리 : ",
+                this.$refs.video.getBoundingClientRect().top + window.pageYOffset);
+            console.log(this.videoData.no + ": 비디오 Viewport와의 거리 : ",
+                this.$refs.video.getBoundingClientRect().top);
+            console.log("내 스크롤 위치 : ", document.scrollingElement.scrollTop);
+            console.log("------------")
+            // 비디오가 viewport와의 거리가 0이라면 비디오 재생
+            let scrollTop = this.$refs.video.getBoundingClientRect().top;
+            console.log(scrollTop);
+            if (scrollTop < 2 || scrollTop > -1) {
+                // this.togglePlay();
+                videos.play();
+            } else {
+                videos.pause();
+            }
+        },
         toggleScrubbing(e) {
             const rect = this.$refs.timelineContainer.getBoundingClientRect();
             const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width;
@@ -175,7 +206,8 @@ export default {
                 Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width;
             // const previewImgNumber = Math.max(1, Math.floor((percent * this.$refs.video.duration) / 10));
             // this.previewImg = require(`assets/previewImgs/preview${previewImgNumber}.jpg`);
-            this.previewImg = this.videoData.thumb_url;
+            let previewImgNumber = this.videoData.thumb_small;
+            this.previewImg = previewImgNumber[Math.max(1, Math.floor((percent * this.$refs.video.duration) / 10))];
             timeline.style.setProperty('--preview-position', percent);
 
             if (this.isScrubbing) {
