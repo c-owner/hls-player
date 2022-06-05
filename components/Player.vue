@@ -117,55 +117,6 @@ export default {
 
     mounted() {
         this.playUrl = this.videoData.play_url.hls['1080p'];
-        window.addEventListener('keyup', ((ev) => {
-            const key = ev.key.toLowerCase()
-            const tagName = window.document.activeElement.tagName.toLowerCase();
-            if (tagName === "input") return;
-            switch (key) {
-                case " ":
-                    if (tagName === "button") return;
-                    break;
-                case "t" :
-                    this.toggleTheater();
-                    break;
-                case "i":
-                    this.toggleMiniMode();
-                    break;
-                case "f":
-                    this.toggleFullScreen();
-                    break;
-                case "arrowup":
-                    this.volumeChange(0.1);
-                    break;
-                case "arrowdown":
-                    this.volumeChange(-0.1);
-                    break;
-                case "m":
-                    this.toggleMute();
-                    break;
-                case "arrowleft":
-                case "j" :
-                    this.skip(-5);
-                    break;
-                case "arrowright":
-                case "l":
-                    this.skip(5);
-                    break;
-                case "p":
-                case "k":
-                    this.togglePlay();
-                    break;
-                case "c":
-                    this.toggleCaptions();
-                    break;
-
-                default:
-                    break;
-            }
-            if (ev.keyCode === 32) {
-                this.togglePlay();
-            }
-        }));
 
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
@@ -220,12 +171,12 @@ export default {
             const percent =
                 Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width;
             const previewImgNumber = Math.max(1, Math.floor((percent * this.$refs.video.duration) / 10));
-            this.previewImg = require(`assets/previewImgs/preview${previewImgNumber}.jpg`);
+            // this.previewImg = require(`assets/previewImgs/preview${previewImgNumber}.jpg`);
             timeline.style.setProperty('--preview-position', percent);
 
             if (this.isScrubbing) {
                 e.preventDefault();
-                this.thumbnailImg = this.previewImg;
+                // this.thumbnailImg = this.previewImg;
                 timeline.style.setProperty('--progress-position', percent)
             }
         },
