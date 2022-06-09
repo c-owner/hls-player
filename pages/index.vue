@@ -8,9 +8,11 @@
         </div>
 
         <hr/>
-        <div class="list-group" >
-            <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box">
-                <Player :key="video.no" :index="index" :videoData="video" />
+        <div class="list-group">
+            <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box"  style="margin-top: 100px;">
+                <Player :key="video.no" :index="index" :videoData="video"
+                        :viewport="return_viewport()"
+                        ref="player"/>
                 <div style="margin-bottom: 150px"></div>
             </div>
         </div>
@@ -37,16 +39,43 @@ export default {
             listApiParamSet: {},
             videoData: [],
             total: '',
+            video_viewport: false,
         }
     },
     created() {
         this.init();
     },
     async mounted() {
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                // 관찰 대상이 viewport 안에 들어온 경우
+                console.log(entry.intersectionRatio)
+                if (entry.intersectionRatio > 0) {
+                    console.log("--------1")
+                    // 광역딜 들어가는데,,
+                    this.return_viewport(true);
+                }
+                else {
+                    console.log("--------2")
+                    // this.$nuxt.$emit('video_viewport_play', false);
+                    this.return_viewport(false);
+                }
+            })
+        })
+        // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
+        setTimeout(() => {
+            const boxElList = document.querySelectorAll('.list-box');
+            boxElList.forEach((el) => {
+                io.observe(el);
+            })
+        }, 1000);
     },
     destroyed() {
     },
     methods: {
+        return_viewport(bool) {
+            return bool;
+        },
         async init () {
             this.listApiParamSet = {
                 row_count: 10,
@@ -77,6 +106,14 @@ export default {
                 }
             }, 500);
         },
+    },
+    watch: {
+        'viewport': {
+            deep: true,
+            handler: function (val, oldVal) {
+                console.log(val, oldVal);
+            }
+        }
     },
 }
 </script>

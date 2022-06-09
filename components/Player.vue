@@ -96,10 +96,7 @@ import Hls from 'hls.js';
 
 export default {
     name: 'Player',
-    props: {
-        videoData: { type: Object, default: {} },
-        index: 0,
-    },
+    props: ['videoData', 'index', 'viewport'],
     data() {
         return {
             playState: false,
@@ -120,7 +117,15 @@ export default {
             videoScroll: 0,
         }
     },
-
+    created() {
+       /* this.$nextTick(() => {
+            setTimeout(() => {
+                this.$nuxt.$on('video_viewport_play', (bool) => {
+                    this.video_viewport(bool);
+                });
+            }, 1500);
+        });*/
+    },
     mounted() {
         // hls 초기화
         this.init();
@@ -170,10 +175,13 @@ export default {
                 this.$refs.video.pause();
             }
         }*/
-
+/*
         document.addEventListener('scroll', () =>{
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
             if (this.videoScroll > -100 && this.videoScroll < 100) {
+                if (this.hls.type !== 'play') {
+                    this.play_setting();
+                }
                 this.paused = false;
                 this.playState = true;
                 this.$refs.video.play();
@@ -187,24 +195,42 @@ export default {
                 // if (currentVideoScroll > -40 && currentVideoScroll < 40) {
                 // }
             }
-        });
+        });*/
+
     },
     beforeDestroy() {
-        // document.removeEventListener('scroll', () =>{
-        //     this.checkScroll();
-        // });
+        // this.$nuxt.$off('video_viewport_play');
     },
     methods: {
+        video_viewport() {
+            console.log("?????????", this.viewport)
+            if (this.viewport) {
+                if (this.hls.type !== 'play') {
+                    this.play_setting();
+                console.log("setup")
+                }
+                console.log("play")
+                this.paused = false;
+                this.playState = true;
+                this.$refs.video.play();
+            } else if (!this.viewport && this.hls.type === 'play') {
+                console.log("pause")
+                this.paused = true;
+                this.playState = false;
+                this.$refs.video.pause();
+            } else {
+                console.log("return")
+                return false;
+            }
+        },
         async play_setting() {
             this.hls.type = 'play';
-            this.$refs.video.pause();
             await this.hls.loadSource(this.videoData.play_url.hls['720p']);
             await this.hls.attachMedia(this.$refs.video);
             this.muted = false;
         },
         async thumb_setting() {
             this.hls.type = 'thumb';
-            this.$refs.video.pause();
             await this.hls.loadSource(this.videoData.play_url.hls['thumb']);
             await this.hls.attachMedia(this.$refs.video);
             this.muted = true;
@@ -213,6 +239,7 @@ export default {
             this.playState = false;
             this.hls = new Hls();
             this.hls.type = 'none';
+            this.$refs.video.src = '';
             this.$refs.video.poster = this.videoData.thumb_url;
             this.$refs.video.currentTime = 0;
         },
@@ -297,6 +324,19 @@ export default {
                 return `${hours}:${leadingZeroFormatter.format(minutes)}:${leadingZeroFormatter.format(seconds)}`;
             }
         },
+        /*player_play() {
+            if (this.hls.type !== 'play') {
+                this.play_setting();
+            }
+            this.paused = false;
+            this.playState = true;
+            this.$refs.video.play();
+        },
+        player_pause() {
+            this.paused = true;
+            this.playState = false;
+            this.$refs.video.pause();
+        },*/
         togglePlay() {
             if (this.hls.type !== 'play') {
                 this.play_setting();
@@ -375,14 +415,16 @@ export default {
         },
     },
     watch: {
-        'paused': {
+        /*'viewport': {
             deep: true,
-            handler: function (newVal, oldVal) {
-                if (this.paused === true) {
-                    // this.init();
-                }
-            }
-        }
+            handler: function (val, oldVal) {
+                console.log(val, oldVal);
+                this.video_viewport(val);
+            },
+        },*/
+        'viewport': function (val, oldVal) {
+            this.video_viewport(val);
+        },
     },
 }
 </script>
