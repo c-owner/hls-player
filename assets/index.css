@@ -7,7 +7,9 @@ body {
 }
 
 .video-container {
-    width: 90%;
+    height: 366px;
+    width: 650px;
+    /*width: 90%;*/
     max-width: 1000px;
     display: flex;
     justify-content: center;

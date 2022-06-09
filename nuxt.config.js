@@ -3,7 +3,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'youtube-video-player-V2',
+    title: 'hls-player',
     htmlAttrs: {
       lang: 'en'
     },

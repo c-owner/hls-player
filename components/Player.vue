@@ -10,7 +10,6 @@
          {'full-screen': fullscreen}, {'muted': volume === 0},
          { scrubbing: isScrubbing }]"
              ref="video_container">
-            <img class="thumbnail-img" :src="thumbnailImg" ref="thumbnailImg"/>
             <div class="video-controls-container">
                 <div class="timeline-container" ref="timelineContainer">
                     <div class="timeline" @mousemove="handleTimelineUpdate($event)"
@@ -84,7 +83,9 @@
 
                 </div>
             </div>
-            <video id="video" ref="video" @click="togglePlay" :autoplay="playState">
+            <video id="video" ref="video" @click="togglePlay"
+                   preload="none"
+                   :autoplay="playState">
             </video>
         </div>
     </div>
@@ -121,10 +122,9 @@ export default {
     },
 
     mounted() {
-        var hls = new Hls();
-        hls.loadSource(this.videoData.play_url.hls['1080p']);
-        hls.attachMedia(this.$refs.video);
-        // this.playUrl = this.videoData.play_url.mp4['1080p'];
+        // hls 초기화
+        this.init();
+        // this.playUrl = this.videoData.play_url.mp4['720p'];
         // this.playUrl = require('@/assets/my_video.mp4');
 
         document.addEventListener("fullscreenchange", () => {
@@ -157,11 +157,10 @@ export default {
             }
         });
 
-        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+        /*if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
             console.log(" page reload ");
             // page가 reload 되었을 때 재생되어야하는데, 모든 영상이 재생되면 곤란함..
             if (this.$refs.video.paused && this.playState) {
-                console.log("???")
                 this.paused = false;
                 this.playState = true;
                 this.$refs.video.play();
@@ -170,20 +169,63 @@ export default {
                 this.playState = false;
                 this.$refs.video.pause();
             }
-        }
+        }*/
 
         document.addEventListener('scroll', () =>{
-            this.checkScroll();
+            this.videoScroll = this.$refs.video.getBoundingClientRect().top;
+            if (this.videoScroll > -100 && this.videoScroll < 100) {
+                this.paused = false;
+                this.playState = true;
+                this.$refs.video.play();
+            } else {
+                this.paused = true;
+                this.playState = false;
+                this.$refs.video.pause();
+                this.$refs.video.currentTime = 0;
+                this.currentTime = '0:00';
+                // this.$refs.video.
+                // if (currentVideoScroll > -40 && currentVideoScroll < 40) {
+                // }
+            }
         });
     },
+    beforeDestroy() {
+        // document.removeEventListener('scroll', () =>{
+        //     this.checkScroll();
+        // });
+    },
     methods: {
-        checkScroll() {
+        async play_setting() {
+            this.hls.type = 'play';
+            this.$refs.video.pause();
+            await this.hls.loadSource(this.videoData.play_url.hls['720p']);
+            await this.hls.attachMedia(this.$refs.video);
+            this.muted = false;
+        },
+        async thumb_setting() {
+            this.hls.type = 'thumb';
+            this.$refs.video.pause();
+            await this.hls.loadSource(this.videoData.play_url.hls['thumb']);
+            await this.hls.attachMedia(this.$refs.video);
+            this.muted = true;
+        },
+        init() {
+            this.playState = false;
+            this.hls = new Hls();
+            this.hls.type = 'none';
+            this.$refs.video.poster = this.videoData.thumb_url;
+            this.$refs.video.currentTime = 0;
+        },
+        checkScroll($event) {
+            console.log("scroll", $event)
             // 비디오가 viewport와의 거리가 0이라면 비디오 재생
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
             // let currentVideoScroll = (this.videoScroll + this.$refs.video.offsetHeight);
             // 스크롤이 비디오 크기보다 내려가거나 올라갔을 경우 정지
-
-            if (this.videoScroll > -40 && this.videoScroll < 40) {
+            if (this.hls.type !== 'thumb') {
+                this.thumb_setting();
+            }
+            if (this.videoScroll > -100 && this.videoScroll < 100) {
                 this.paused = false;
                 this.playState = true;
                 this.$refs.video.play();
@@ -256,6 +298,9 @@ export default {
             }
         },
         togglePlay() {
+            if (this.hls.type !== 'play') {
+                this.play_setting();
+            }
             if (this.$refs.video.paused) {
                 this.paused = false;
                 this.playState = true;
@@ -328,6 +373,8 @@ export default {
                 this.$refs.video.requestPictureInPicture();
             }
         },
+    },
+    watch: {
     },
 }
 </script>

@@ -3,14 +3,15 @@
         <div class="text-center">
             <div>
                 <h1>Video List HLS Player</h1>
-                total: {{ total}}
+                total: {{ total }}
             </div>
         </div>
 
         <hr/>
-        <div class="list-group">
+        <div class="list-group" >
             <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box">
                 <Player :key="video.no" :index="index" :videoData="video" />
+                <div style="margin-bottom: 150px"></div>
             </div>
         </div>
         <infinite-loading
@@ -58,6 +59,7 @@ export default {
             let params = JSON.parse(JSON.stringify(this.listApiParamSet));
             const response = await this.$store.dispatch("get_video", params);
             this.videoData = response.data;
+            this.total = response.total;
         },
         async getPlayer($state) {
             setTimeout(async () => {
