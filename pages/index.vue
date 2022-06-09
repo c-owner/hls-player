@@ -53,15 +53,16 @@ export default {
                 if (entry.intersectionRatio > 0) {
                     console.log("--------1")
                     // 광역딜 들어가는데,,
-                    this.return_viewport(true);
                 }
                 else {
                     console.log("--------2")
                     // this.$nuxt.$emit('video_viewport_play', false);
-                    this.return_viewport(false);
                 }
             })
         })
+        console.log("io--------------")
+        console.log(io)
+        console.log("------end--------")
         // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
         setTimeout(() => {
             const boxElList = document.querySelectorAll('.list-box');

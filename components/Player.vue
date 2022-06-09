@@ -127,6 +127,7 @@ export default {
         });*/
     },
     mounted() {
+        console.log(this.index);
         // hls 초기화
         this.init();
         // this.playUrl = this.videoData.play_url.mp4['720p'];
@@ -423,7 +424,9 @@ export default {
             },
         },*/
         'viewport': function (val, oldVal) {
-            this.video_viewport(val);
+            if (val !== oldVal) {
+                this.video_viewport(val);
+            }
         },
     },
 }
