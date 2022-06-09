@@ -375,6 +375,14 @@ export default {
         },
     },
     watch: {
+        'paused': {
+            deep: true,
+            handler: function (newVal, oldVal) {
+                if (this.paused === true) {
+                    // this.init();
+                }
+            }
+        }
     },
 }
 </script>
