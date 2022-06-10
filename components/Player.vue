@@ -84,7 +84,8 @@
                 </div>
             </div>
             <video id="video" ref="video" @click="togglePlay"
-                   preload="none"
+                   preload="auto"
+                   playsinline
                    :autoplay="playState">
             </video>
         </div>
@@ -115,24 +116,19 @@ export default {
             thumbnailImg: '',
             isScrubbing: false,
             videoScroll: 0,
+
+            nowTime: new Date(),
+            scrollPoint: null,
         }
     },
-    created() {
-       /* this.$nextTick(() => {
-            setTimeout(() => {
-                this.$nuxt.$on('video_viewport_play', (bool) => {
-                    this.video_viewport(bool);
-                });
-            }, 1500);
-        });*/
-    },
     mounted() {
-        console.log(this.index);
         // hls 초기화
         this.init();
         // this.playUrl = this.videoData.play_url.mp4['720p'];
         // this.playUrl = require('@/assets/my_video.mp4');
-
+        this.updateNow();
+        this.scrollPoint = new Date();
+        setInterval(this.updateNow.bind(this) , 1000)
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
         });
@@ -176,33 +172,46 @@ export default {
                 this.$refs.video.pause();
             }
         }*/
-/*
         document.addEventListener('scroll', () =>{
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
+            this.scrollPoint = new Date();
+            this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 3);
             if (this.videoScroll > -100 && this.videoScroll < 100) {
-                if (this.hls.type !== 'play') {
-                    this.play_setting();
-                }
-                this.paused = false;
-                this.playState = true;
-                this.$refs.video.play();
-            } else {
-                this.paused = true;
-                this.playState = false;
-                this.$refs.video.pause();
-                this.$refs.video.currentTime = 0;
-                this.currentTime = '0:00';
-                // this.$refs.video.
-                // if (currentVideoScroll > -40 && currentVideoScroll < 40) {
-                // }
-            }
-        });*/
 
+            } else {
+                this.player_pause();
+            }
+        });
+        const io = new IntersectionObserver(entries => {
+            console.log(entries);
+            entries.forEach(entry => {
+            console.log(entry);
+                this.videoScroll = this.$refs.video.getBoundingClientRect().top;
+                this.scrollPoint = new Date();
+                this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 3);
+                if (this.videoScroll > -100 && this.videoScroll < 100) {
+                    console.log("----------")
+                } else {
+                    this.player_pause();
+                }
+            })
+        })
+        console.log("io--------------")
+        console.log(io)
+        console.log("------end--------")
+        // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
+        setTimeout(() => {
+            const data = this.nowTime;
+            io.observe(data);
+        }, 1000);
     },
     beforeDestroy() {
         // this.$nuxt.$off('video_viewport_play');
     },
     methods: {
+        updateNow() {
+            this.nowTime = new Date();
+        },
         video_viewport() {
             console.log("?????????", this.viewport)
             if (this.viewport) {
@@ -325,7 +334,7 @@ export default {
                 return `${hours}:${leadingZeroFormatter.format(minutes)}:${leadingZeroFormatter.format(seconds)}`;
             }
         },
-        /*player_play() {
+        player_play() {
             if (this.hls.type !== 'play') {
                 this.play_setting();
             }
@@ -337,7 +346,9 @@ export default {
             this.paused = true;
             this.playState = false;
             this.$refs.video.pause();
-        },*/
+            this.$refs.video.currentTime = 0;
+            this.currentTime = '0:00';
+        },
         togglePlay() {
             if (this.hls.type !== 'play') {
                 this.play_setting();
@@ -416,18 +427,32 @@ export default {
         },
     },
     watch: {
-        /*'viewport': {
-            deep: true,
-            handler: function (val, oldVal) {
-                console.log(val, oldVal);
-                this.video_viewport(val);
-            },
-        },*/
         'viewport': function (val, oldVal) {
             if (val !== oldVal) {
                 this.video_viewport(val);
             }
         },
+        /*'scrollPoint': function (val, oldVal) {
+            console.log(val);
+            console.log(val.getSeconds() == this.nowTime.getSeconds())
+            if (val.getSeconds() == this.nowTime.getSeconds()) {
+                console.log("111111")
+               if (this.videoScroll > -100 && this.videoScroll < 100) {
+                console.log("2222222")
+                   this.player_play();
+               }
+            }
+        },*/
+        'videoScroll': function (val, oldVal) {
+            if (this.videoScroll > -100 && this.videoScroll < 100) {
+                console.log("nowTime :::::: " + this.nowTime.getSeconds());
+                console.log("scrollPoint :::::::::: " + this.scrollPoint.getSeconds());
+                if (this.nowTime.getSeconds() >= this.scrollPoint.getSeconds()) {
+                console.log("??????11")
+                    this.player_play();
+                }
+            }
+        }
     },
 }
 </script>
