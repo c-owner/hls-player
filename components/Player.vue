@@ -128,7 +128,9 @@ export default {
         // this.playUrl = require('@/assets/my_video.mp4');
         this.updateNow();
         this.scrollPoint = new Date();
-        setInterval(this.updateNow.bind(this) , 1000)
+        setInterval(this.updateNow.bind(this) , 1000);
+
+
         document.addEventListener("fullscreenchange", () => {
             this.$refs.video_container.classList.toggle('full-screen');
         });
@@ -425,6 +427,12 @@ export default {
                 this.$refs.video.requestPictureInPicture();
             }
         },
+        timeEquals() {
+            if (this.nowTime.getTime() === this.scrollPoint.getTime()) {
+                console.log("??????11")
+                this.player_play();
+            }
+        },
     },
     watch: {
         'viewport': function (val, oldVal) {
@@ -432,7 +440,7 @@ export default {
                 this.video_viewport(val);
             }
         },
-        /*'scrollPoint': function (val, oldVal) {
+        /*'nowTime': function (val, oldVal) {
             console.log(val);
             console.log(val.getSeconds() == this.nowTime.getSeconds())
             if (val.getSeconds() == this.nowTime.getSeconds()) {
@@ -445,12 +453,10 @@ export default {
         },*/
         'videoScroll': function (val, oldVal) {
             if (this.videoScroll > -100 && this.videoScroll < 100) {
-                console.log("nowTime :::::: " + this.nowTime.getSeconds());
-                console.log("scrollPoint :::::::::: " + this.scrollPoint.getSeconds());
-                if (this.nowTime.getSeconds() >= this.scrollPoint.getSeconds()) {
-                console.log("??????11")
-                    this.player_play();
-                }
+                setInterval(this.timeEquals.bind(this), 1000);
+                console.log("nowTime :::::: " + this.nowTime);
+                console.log("scrollPoint :::::::::: " + this.scrollPoint);
+
             }
         }
     },
