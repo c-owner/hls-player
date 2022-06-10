@@ -3,6 +3,7 @@
         <div class="text-center">
             <div>
                 <h1>Video List HLS Player</h1>
+                <h4 style="color: #e5e5e5">지금까지 이런 버그는 없었다.. 이것은 무엇인가</h4>
                 total: {{ total }}
             </div>
         </div>
