@@ -97,7 +97,7 @@ import Hls from 'hls.js';
 
 export default {
     name: 'Player',
-    props: ['videoData', 'index', 'viewport'],
+    props: ['videoData', 'index'],
     data() {
         return {
             playState: false,
@@ -206,32 +206,10 @@ export default {
         }, 1000);*/
     },
     beforeDestroy() {
-        // this.$nuxt.$off('video_viewport_play');
     },
     methods: {
         updateNow() {
             this.nowTime = new Date();
-        },
-        video_viewport() {
-            console.log("?????????", this.viewport)
-            if (this.viewport) {
-                if (this.hls.type !== 'play') {
-                    this.play_setting();
-                console.log("setup")
-                }
-                console.log("play")
-                this.paused = false;
-                this.playState = true;
-                this.$refs.video.play();
-            } else if (!this.viewport && this.hls.type === 'play') {
-                console.log("pause")
-                this.paused = true;
-                this.playState = false;
-                this.$refs.video.pause();
-            } else {
-                console.log("return")
-                return false;
-            }
         },
         async play_setting() {
             this.hls.type = 'play';
@@ -414,11 +392,6 @@ export default {
         },
     },
     watch: {
-        'viewport': function (val, oldVal) {
-            if (val !== oldVal) {
-                this.video_viewport(val);
-            }
-        },
         'nowTime': function (val, oldVal) {
             if (this.scrollPoint === null ) {
                 return;

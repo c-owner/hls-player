@@ -12,7 +12,6 @@
         <div class="list-group">
             <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box"  style="margin-top: 100px;">
                 <Player :key="video.no" :index="index" :videoData="video"
-                        :viewport="return_viewport()"
                         ref="player"/>
                 <div style="margin-bottom: 150px"></div>
             </div>
@@ -40,14 +39,13 @@ export default {
             listApiParamSet: {},
             videoData: [],
             total: '',
-            video_viewport: false,
         }
     },
     created() {
         this.init();
     },
     async mounted() {
-        const io = new IntersectionObserver(entries => {
+/*        const io = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 // 관찰 대상이 viewport 안에 들어온 경우
                 console.log(entry.intersectionRatio)
@@ -70,14 +68,11 @@ export default {
             boxElList.forEach((el) => {
                 io.observe(el);
             })
-        }, 1000);
+        }, 1000);*/
     },
     destroyed() {
     },
     methods: {
-        return_viewport(bool) {
-            return bool;
-        },
         async init () {
             this.listApiParamSet = {
                 row_count: 10,
@@ -110,12 +105,6 @@ export default {
         },
     },
     watch: {
-        'viewport': {
-            deep: true,
-            handler: function (val, oldVal) {
-                console.log(val, oldVal);
-            }
-        }
     },
 }
 </script>
