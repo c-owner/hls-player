@@ -128,8 +128,8 @@ export default {
         // this.playUrl = this.videoData.play_url.mp4['720p'];
         // this.playUrl = require('@/assets/my_video.mp4');
         this.updateNow();
-        this.scrollPoint = new Date();
-        this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
+        this.videoScroll = 0.1;
+        this.scrollPoint = null;
         setInterval(this.updateNow.bind(this) , 1000);
 
 
@@ -186,7 +186,7 @@ export default {
                 this.player_pause();
             }
         });
-        const io = new IntersectionObserver(entries => {
+/*        const io = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 this.videoScroll = this.$refs.video.getBoundingClientRect().top;
                 this.scrollPoint = new Date();
@@ -203,7 +203,7 @@ export default {
         setTimeout(() => {
             const data = this.nowTime;
             io.observe(data);
-        }, 1000);
+        }, 1000);*/
     },
     beforeDestroy() {
         // this.$nuxt.$off('video_viewport_play');
@@ -252,30 +252,6 @@ export default {
             this.$refs.video.src = '';
             this.$refs.video.poster = this.videoData.thumb_url;
             this.$refs.video.currentTime = 0;
-        },
-        checkScroll($event) {
-            console.log("scroll", $event)
-            // 비디오가 viewport와의 거리가 0이라면 비디오 재생
-            this.videoScroll = this.$refs.video.getBoundingClientRect().top;
-            // let currentVideoScroll = (this.videoScroll + this.$refs.video.offsetHeight);
-            // 스크롤이 비디오 크기보다 내려가거나 올라갔을 경우 정지
-            if (this.hls.type !== 'thumb') {
-                this.thumb_setting();
-            }
-            if (this.videoScroll > -100 && this.videoScroll < 100) {
-                this.paused = false;
-                this.playState = true;
-                this.$refs.video.play();
-            } else {
-                this.paused = true;
-                this.playState = false;
-                this.$refs.video.pause();
-                this.$refs.video.currentTime = 0;
-                this.currentTime = '0:00';
-                // this.$refs.video.
-                // if (currentVideoScroll > -40 && currentVideoScroll < 40) {
-                // }
-            }
         },
         toggleScrubbing(e) {
             const rect = this.$refs.timelineContainer.getBoundingClientRect();
@@ -428,6 +404,9 @@ export default {
             }
         },
         timeEquals() {
+            if (this.scrollPoint === null ) {
+                return;
+            }
             if (this.nowTime.getTime() === this.scrollPoint.getTime()) {
                 // console.log("??????11")
                 this.player_play();
@@ -441,9 +420,9 @@ export default {
             }
         },
         'nowTime': function (val, oldVal) {
-            console.log(val);
-            console.log(val.getSeconds() == this.scrollPoint.getSeconds())
-
+            if (this.scrollPoint === null ) {
+                return;
+            }
             if (val.getSeconds() == this.scrollPoint.getSeconds()) {
                 // console.log("111111")
                if (this.videoScroll > -100 && this.videoScroll < 100) {
