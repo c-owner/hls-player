@@ -119,6 +119,7 @@ export default {
 
             nowTime: new Date(),
             scrollPoint: null,
+            count: 0,
         }
     },
     mounted() {
@@ -128,6 +129,7 @@ export default {
         // this.playUrl = require('@/assets/my_video.mp4');
         this.updateNow();
         this.scrollPoint = new Date();
+        this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
         setInterval(this.updateNow.bind(this) , 1000);
 
 
@@ -177,7 +179,7 @@ export default {
         document.addEventListener('scroll', () =>{
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
             this.scrollPoint = new Date();
-            this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 3);
+            this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
             if (this.videoScroll > -100 && this.videoScroll < 100) {
 
             } else {
@@ -185,15 +187,11 @@ export default {
             }
         });
         const io = new IntersectionObserver(entries => {
-            console.log(entries);
             entries.forEach(entry => {
-            console.log(entry);
                 this.videoScroll = this.$refs.video.getBoundingClientRect().top;
                 this.scrollPoint = new Date();
-                this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 3);
-                if (this.videoScroll > -100 && this.videoScroll < 100) {
-                    console.log("----------")
-                } else {
+                this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
+                if (this.videoScroll < -100 && this.videoScroll > 100) {
                     this.player_pause();
                 }
             })
@@ -341,11 +339,13 @@ export default {
                 this.play_setting();
             }
             this.paused = false;
+            this.muted = true;
             this.playState = true;
             this.$refs.video.play();
         },
         player_pause() {
             this.paused = true;
+            this.muted = false;
             this.playState = false;
             this.$refs.video.pause();
             this.$refs.video.currentTime = 0;
@@ -429,7 +429,7 @@ export default {
         },
         timeEquals() {
             if (this.nowTime.getTime() === this.scrollPoint.getTime()) {
-                console.log("??????11")
+                // console.log("??????11")
                 this.player_play();
             }
         },
@@ -440,22 +440,23 @@ export default {
                 this.video_viewport(val);
             }
         },
-        /*'nowTime': function (val, oldVal) {
+        'nowTime': function (val, oldVal) {
             console.log(val);
-            console.log(val.getSeconds() == this.nowTime.getSeconds())
-            if (val.getSeconds() == this.nowTime.getSeconds()) {
-                console.log("111111")
+            console.log(val.getSeconds() == this.scrollPoint.getSeconds())
+
+            if (val.getSeconds() == this.scrollPoint.getSeconds()) {
+                // console.log("111111")
                if (this.videoScroll > -100 && this.videoScroll < 100) {
-                console.log("2222222")
+                // console.log("2222222")
                    this.player_play();
                }
             }
-        },*/
+        },
         'videoScroll': function (val, oldVal) {
             if (this.videoScroll > -100 && this.videoScroll < 100) {
                 setInterval(this.timeEquals.bind(this), 1000);
-                console.log("nowTime :::::: " + this.nowTime);
-                console.log("scrollPoint :::::::::: " + this.scrollPoint);
+                // console.log("nowTime :::::: " + this.nowTime);
+                // console.log("scrollPoint :::::::::: " + this.scrollPoint);
 
             }
         }
