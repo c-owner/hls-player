@@ -3,14 +3,14 @@
         <div class="text-center">
             <div>
                 <h1>Video List HLS Player</h1>
-                <h4 style="color: #e5e5e5">지금까지 이런 버그는 없었다.. 이것은 무엇인가</h4>
                 total: {{ total }}
             </div>
         </div>
 
         <hr/>
-        <div class="list-group">
-            <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box"  style="margin-top: 100px;">
+        <div class="list-group" >
+            <div v-for="(video, index) in videoData" :key="`${video.no}`" class="list-box"
+                 style="margin-top: 100px;">
                 <Player :key="video.no" :index="index" :videoData="video"
                         ref="player"/>
                 <div style="margin-bottom: 150px"></div>
@@ -73,6 +73,9 @@ export default {
     destroyed() {
     },
     methods: {
+        move_page(url) {
+            this.$router.push(url);
+        },
         async init () {
             this.listApiParamSet = {
                 row_count: 10,

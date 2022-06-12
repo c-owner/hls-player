@@ -119,7 +119,6 @@ export default {
 
             nowTime: new Date(),
             scrollPoint: null,
-            count: 0,
         }
     },
     mounted() {
@@ -165,7 +164,7 @@ export default {
 
         /*if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
             console.log(" page reload ");
-            // page가 reload 되었을 때 재생되어야하는데, 모든 영상이 재생되면 곤란함..
+            // page가 reload 되었을 때
             if (this.$refs.video.paused && this.playState) {
                 this.paused = false;
                 this.playState = true;
@@ -180,9 +179,8 @@ export default {
             this.videoScroll = this.$refs.video.getBoundingClientRect().top;
             this.scrollPoint = new Date();
             this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
-            if (this.videoScroll > -100 && this.videoScroll < 100) {
-
-            } else {
+            if (this.videoScroll < -100 || this.videoScroll > 100) {
+                console.log('scroll');
                 this.player_pause();
             }
         });
@@ -215,6 +213,8 @@ export default {
             this.hls.type = 'play';
             await this.hls.loadSource(this.videoData.play_url.hls['720p']);
             await this.hls.attachMedia(this.$refs.video);
+            this.$refs.video.volume = 0.5;
+            this.volume = 0.5;
             this.muted = false;
         },
         async thumb_setting() {
@@ -309,6 +309,7 @@ export default {
             if (this.hls.type !== 'play') {
                 this.play_setting();
             }
+            this.isScroll = true;
             if (this.$refs.video.paused) {
                 this.paused = false;
                 this.playState = true;
