@@ -119,6 +119,7 @@ export default {
 
             nowTime: new Date(),
             scrollPoint: null,
+            isScroll: false,
         }
     },
     mounted() {
@@ -180,7 +181,6 @@ export default {
             this.scrollPoint = new Date();
             this.scrollPoint.setSeconds(this.scrollPoint.getSeconds() + 2);
             if (this.videoScroll < -100 || this.videoScroll > 100) {
-                console.log('scroll');
                 this.player_pause();
             }
         });
@@ -292,12 +292,16 @@ export default {
             if (this.hls.type !== 'play') {
                 this.play_setting();
             }
+            this.isScroll = true;
             this.paused = false;
             this.muted = true;
             this.playState = true;
             this.$refs.video.play();
         },
         player_pause() {
+            if (this.isScroll === false) {
+                return;
+            }
             this.paused = true;
             this.muted = false;
             this.playState = false;
@@ -309,7 +313,7 @@ export default {
             if (this.hls.type !== 'play') {
                 this.play_setting();
             }
-            this.isScroll = true;
+            this.isScroll = false;
             if (this.$refs.video.paused) {
                 this.paused = false;
                 this.playState = true;
@@ -388,6 +392,7 @@ export default {
             }
             if (this.nowTime.getTime() === this.scrollPoint.getTime()) {
                 // console.log("??????11")
+                this.isScroll = true;
                 this.player_play();
             }
         },
